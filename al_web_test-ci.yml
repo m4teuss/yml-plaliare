@@ -1,40 +1,58 @@
+ 
+ # Startando testes através de trigger
 trigger:
   branches:
     include:
     - refs/heads/qa
+
+# Rodar testes todos os dias as 7h49 AM
 schedules:
 - cron: 49 7 * * *
   branches:
     include:
     - refs/heads/qa
+
+# Rodar testes a cada atualização na branch qa
 resources:
   repositories:
   - repository: self
     type: git
     ref: refs/heads/qa
+
+
 jobs:
 - job: Job_1
   displayName: Agent job 1
+
+  # Máquina de execuções dos testes
   pool:
-    vmImage: ubuntu-20.04
+    vmImage: ubuntu-20.04 
   steps:
   - checkout: self
-  - task: NodeTool@0
+
+  #Instalando Node
+  - task: NodeTool@0  
     displayName: Use Node 14.x
     inputs:
       versionSpec: 14.x
-  - task: Npm@1
+
+  # Instalar dependencias do projeto
+  - task: Npm@1 
     displayName: Instalar dependências
     inputs:
       workingDir: automacao-aliare
       verbose: false
-  - task: Npm@1
+
+  # Instalar cucumber usando npm (node)
+  - task: Npm@1 
     displayName: Instalar cucumber
     inputs:
       command: custom
       workingDir: automacao-aliare
       verbose: false
       customCommand: i cypress-cucumber-preprocessor
+
+  # Executar os testes e2e portal com npm em cima do (node)
   - task: Npm@1
     displayName: Executar teste E2E
     inputs:
@@ -42,6 +60,8 @@ jobs:
       workingDir: automacao-aliare
       verbose: false
       customCommand: run cy:e2e:fulltest:run
+
+  # Executar os testes apis com npm em cima do (node)    
   - task: Npm@1
     displayName: Executar teste API
     inputs:
@@ -49,6 +69,8 @@ jobs:
       workingDir: automacao-aliare
       verbose: false
       customCommand: run cy:apis:fulltest:run
+
+  # Alimentar specflow com     
   - task: SpecFlowPlus@0
     displayName: 'SpecFlow+ build step. '
     inputs:
