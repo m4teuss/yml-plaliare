@@ -1,5 +1,5 @@
  
- # Startando testes através de trigger
+# Startando testes através de trigger
 trigger:
   branches:
     include:
@@ -19,7 +19,6 @@ resources:
     type: git
     ref: refs/heads/qa
 
-
 jobs:
 - job: Job_1
   displayName: Agent job 1
@@ -30,7 +29,7 @@ jobs:
   steps:
   - checkout: self
 
-  #Instalando Node
+  # Instalando Node
   - task: NodeTool@0  
     displayName: Use Node 14.x
     inputs:
